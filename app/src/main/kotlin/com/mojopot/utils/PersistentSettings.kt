@@ -1,4 +1,4 @@
-package com.mojopot.common.utils
+package com.mojopot.utils
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
