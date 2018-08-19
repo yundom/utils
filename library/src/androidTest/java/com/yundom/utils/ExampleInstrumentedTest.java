@@ -1,4 +1,4 @@
-package com.mojopot.utils;
+package com.yundom.utils;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
