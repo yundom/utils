@@ -1,8 +1,5 @@
 package com.yundom.utils
 
-/**
- * Created by dhsieh on 20/8/18.
- */
 interface PersistentSettings {
     fun setBoolean(key: String, value: Boolean)
     fun getBoolean(key: String, defaultValue: Boolean): Boolean
