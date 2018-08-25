@@ -1,32 +1,25 @@
 package com.yundom.utils
 
+import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.nhaarman.mockito_kotlin.*
 import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
-class PersistentSettingsImplTest {
+class PersistentSettingsImplTest : BaseRobolectricTestCase() {
     companion object {
         const val TEST_KEY = "TEST_KEY"
+        const val FILE_NAME = "filename"
     }
 
-    @Mock
-    internal lateinit var sharedPreference: SharedPreferences
-
-    @Mock
-    internal lateinit var editor: SharedPreferences.Editor
+    private lateinit var sharedPreference: SharedPreferences
 
     private lateinit var persistentSettings: PersistentSettings
 
     @Before
     fun setUp() {
-        whenever(sharedPreference.edit()).thenReturn(editor)
+        sharedPreference = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
         persistentSettings = PersistentSettingsImpl(sharedPreference)
     }
 
@@ -34,16 +27,14 @@ class PersistentSettingsImplTest {
     fun setBoolean() {
         persistentSettings.setBoolean(TEST_KEY, true)
 
-        verify(sharedPreference, times(1)).edit()
-        verify(editor, times(1)).putBoolean(TEST_KEY, true)
-        verify(editor, times(1)).apply()
-        verifyNoMoreInteractions(editor)
-        verifyNoMoreInteractions(sharedPreference)
+        assertTrue(sharedPreference.getBoolean(TEST_KEY, false))
     }
 
     @Test
     fun getBoolean() {
-        whenever(sharedPreference.getBoolean(eq(TEST_KEY), any())).thenReturn(true)
+        val editor = sharedPreference.edit()
+        editor.putBoolean(TEST_KEY, true)
+        editor.commit()
 
         val result = persistentSettings.getBoolean(TEST_KEY, false)
 
@@ -54,82 +45,63 @@ class PersistentSettingsImplTest {
     fun setInt() {
         persistentSettings.setInt(TEST_KEY, 123)
 
-        verify(sharedPreference, times(1)).edit()
-        verify(editor, times(1)).putInt(TEST_KEY, 123)
-        verify(editor, times(1)).apply()
-        verifyNoMoreInteractions(editor)
-        verifyNoMoreInteractions(sharedPreference)
+        assertEquals(123, sharedPreference.getInt(TEST_KEY, 0))
     }
 
     @Test
     fun getInt() {
-        whenever(sharedPreference.getInt(eq(TEST_KEY), any())).thenReturn(123)
+        val editor = sharedPreference.edit()
+        editor.putInt(TEST_KEY, 123)
+        editor.commit()
 
-        val result = persistentSettings.getInt(TEST_KEY, 0)
-
-        assertEquals(123, result)
+        assertEquals(123, persistentSettings.getInt(TEST_KEY, 0))
     }
 
     @Test
     fun setFloat() {
         persistentSettings.setFloat(TEST_KEY, 0.123f)
 
-        verify(sharedPreference, times(1)).edit()
-        verify(editor, times(1)).putFloat(TEST_KEY, 0.123f)
-        verify(editor, times(1)).apply()
-        verifyNoMoreInteractions(editor)
-        verifyNoMoreInteractions(sharedPreference)
+        assertEquals(0.123f, sharedPreference.getFloat(TEST_KEY, 0f))
     }
 
     @Test
     fun getFloat() {
-        whenever(sharedPreference.getFloat(eq(TEST_KEY), any())).thenReturn(0.123f)
+        val editor = sharedPreference.edit()
+        editor.putFloat(TEST_KEY, 0.123f)
+        editor.commit()
 
-        val result = persistentSettings.getFloat(TEST_KEY, 0f)
-
-        assertEquals(0.123f, result)
+        assertEquals(0.123f, persistentSettings.getFloat(TEST_KEY, 0f))
     }
 
     @Test
     fun setString() {
         persistentSettings.setString(TEST_KEY, "HELLO")
 
-        verify(sharedPreference, times(1)).edit()
-        verify(editor, times(1)).putString(TEST_KEY, "HELLO")
-        verify(editor, times(1)).apply()
-        verifyNoMoreInteractions(editor)
-        verifyNoMoreInteractions(sharedPreference)
+        assertEquals("HELLO", sharedPreference.getString(TEST_KEY, ""))
     }
 
     @Test
     fun getString() {
-        whenever(sharedPreference.getString(eq(TEST_KEY), any())).thenReturn("HELLO")
+        val editor = sharedPreference.edit()
+        editor.putString(TEST_KEY, "HELLO")
+        editor.commit()
 
-        val result = persistentSettings.getString(TEST_KEY, "HELLO")
-
-        assertEquals("HELLO", result)
+        assertEquals("HELLO", persistentSettings.getString(TEST_KEY, ""))
     }
 
     @Test
     fun setObject() {
-        val testObject = ClassForTest()
-        val gson = Gson()
-        val serializedTestOBject = gson.toJson(testObject)
-        persistentSettings.setObject(TEST_KEY, testObject)
+        persistentSettings.setObject(TEST_KEY, ClassForTest())
 
-        verify(sharedPreference, times(1)).edit()
-        verify(editor, times(1)).putString(TEST_KEY, serializedTestOBject)
-        verify(editor, times(1)).apply()
-        verifyNoMoreInteractions(editor)
-        verifyNoMoreInteractions(sharedPreference)
+        assertEquals(classForTestJson(), sharedPreference.getString(TEST_KEY, ""))
     }
 
     @Test
     fun getObject() {
         val testObject = ClassForTest()
-        val gson = Gson()
-        val serializedTestOBject = gson.toJson(testObject)
-        whenever(sharedPreference.getString(eq(TEST_KEY), anyOrNull())).thenReturn(serializedTestOBject)
+        val editor = sharedPreference.edit()
+        editor.putString(TEST_KEY, classForTestJson())
+        editor.commit()
 
         val result = persistentSettings.getObject(TEST_KEY, ClassForTest::class.java, null)
 
@@ -141,32 +113,41 @@ class PersistentSettingsImplTest {
 
     @Test
     fun contains() {
-        whenever(sharedPreference.contains(eq(TEST_KEY))).thenReturn(true)
+        val editor = sharedPreference.edit()
+        editor.putBoolean(TEST_KEY, true)
+        editor.commit()
 
-        assertTrue(sharedPreference.contains(TEST_KEY))
-        assertFalse(sharedPreference.contains("SOMETHING"))
+        assertTrue(persistentSettings.contains(TEST_KEY))
+        assertFalse(persistentSettings.contains("SOMETHING"))
     }
 
     @Test
     fun remove() {
+        val editor = sharedPreference.edit()
+        editor.putBoolean(TEST_KEY, true)
+        editor.commit()
+
         persistentSettings.remove(TEST_KEY)
 
-        verify(sharedPreference, times(1)).edit()
-        verify(editor, times(1)).remove(TEST_KEY)
-        verify(editor, times(1)).apply()
-        verifyNoMoreInteractions(editor)
-        verifyNoMoreInteractions(sharedPreference)
+        assertFalse(sharedPreference.contains(TEST_KEY))
     }
 
     @Test
     fun reset() {
+        val editor = sharedPreference.edit()
+        editor.putBoolean(TEST_KEY, true)
+        editor.commit()
+
         persistentSettings.reset()
 
-        verify(sharedPreference, times(1)).edit()
-        verify(editor, times(1)).clear()
-        verify(editor, times(1)).apply()
-        verifyNoMoreInteractions(editor)
-        verifyNoMoreInteractions(sharedPreference)
+        assertFalse(sharedPreference.contains(TEST_KEY))
+    }
+
+
+    private fun classForTestJson(): String {
+        val testObject = ClassForTest()
+        val gson = Gson()
+        return gson.toJson(testObject)
     }
 
     class ClassForTest {
