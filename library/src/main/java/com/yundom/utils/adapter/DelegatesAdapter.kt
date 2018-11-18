@@ -4,18 +4,21 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
 abstract class DelegatesAdapter<I : Any>(
-        vararg delegates: AdapterDelegate<RecyclerView.ViewHolder, I>
+        vararg delegates: ItemDelegate<out RecyclerView.ViewHolder, out I>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var items: List<I> = emptyList()
 
     private val itemTypeToIndexMap: Map<Class<*>, Int>
-    private val delegates: List<AdapterDelegate<RecyclerView.ViewHolder, I>>
+    private val delegates: List<ItemDelegate<RecyclerView.ViewHolder, I>>
 
     init {
         itemTypeToIndexMap = delegates.mapIndexed { index, delegate ->
             delegate.itemType() to index
         }.toMap()
-        this.delegates = delegates.map { it }
+        this.delegates = delegates.map {
+            it as? ItemDelegate<RecyclerView.ViewHolder, I>
+                    ?: throw IllegalArgumentException("Unsupported delegate type.")
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
