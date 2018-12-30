@@ -34,4 +34,8 @@ abstract class DelegatesAdapter<I : Any>(
             delegates[it]
         }?.bindView(holder, item)
     }
+
+    override fun getItemViewType(position: Int): Int =
+            itemTypeToIndexMap[items[position]::class.java]
+                    ?: throw IllegalArgumentException("Unknown delegate type.")
 }
