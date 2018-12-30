@@ -97,6 +97,13 @@ class DelegatesAdapterTest {
         }
     }
 
+    @Test
+    fun getItemViewType() {
+        for (i in 0..9) {
+            assertEquals(i % 3, adapter.getItemViewType(i))
+        }
+    }
+
     private fun createItems(num: Int): List<TestingData> {
         return (0 until num).map {
             when (it % 3) {
