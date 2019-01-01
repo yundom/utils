@@ -10,12 +10,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class DelegatesAdapterTest {
-    @Spy
+    @Mock
     lateinit var itemDelegateTypeA: ItemDelegateTypeA
 
     @Mock
