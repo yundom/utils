@@ -1,6 +1,5 @@
 package com.yundom.utils.adapter
 
-import android.content.pm.ApplicationInfo
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
