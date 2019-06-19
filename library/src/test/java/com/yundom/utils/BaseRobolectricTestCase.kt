@@ -9,7 +9,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class, sdk = [19, 27])
+@Config(sdk = [19, 27])
 abstract class BaseRobolectricTestCase {
     @Rule
     @JvmField
