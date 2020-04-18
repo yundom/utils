@@ -1,7 +1,7 @@
 package com.yundom.utils.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 
 abstract class HeaderDelegateAdapterWrapper<I : Any>(
         private val wrappedAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
@@ -13,7 +13,7 @@ abstract class HeaderDelegateAdapterWrapper<I : Any>(
 
     var items: List<I> = emptyList()
 
-    var headerCount: Int = items.size
+    val headerCount: Int
         get() = items.size
 
     init {
