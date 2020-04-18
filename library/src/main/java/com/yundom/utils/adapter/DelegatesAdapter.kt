@@ -1,7 +1,7 @@
 package com.yundom.utils.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 
 abstract class DelegatesAdapter<I : Any>(
         vararg delegates: ItemDelegate<out RecyclerView.ViewHolder, out I>

@@ -1,12 +1,11 @@
 package com.yundom.utils.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import java.lang.ref.WeakReference
 
 open class AdapterWrapper<VH : RecyclerView.ViewHolder>(
-        private var wrappedAdapter: RecyclerView.Adapter<VH>
-) : RecyclerView.Adapter<VH>() {
+        private var wrappedAdapter: RecyclerView.Adapter<VH>) : RecyclerView.Adapter<VH>() {
     private var bridgeObserver: BridgeObserver<VH>?
 
     init {

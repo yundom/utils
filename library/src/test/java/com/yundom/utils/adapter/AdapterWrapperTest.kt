@@ -1,8 +1,8 @@
 package com.yundom.utils.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.times
@@ -67,7 +67,8 @@ class AdapterWrapperTest : BaseRobolectricTestCase() {
     }
 
     open class TestAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        @Mock var itemView: View = mock()
+        @Mock
+        var itemView: View = mock()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             return TestViewHolder(itemView)
