@@ -22,6 +22,12 @@ android {
             includeAndroidResources = true
         }
     }
+    sourceSets.main {
+        java.srcDirs("src/main/kotlin")
+    }
+    sourceSets.test {
+        java.srcDirs("src/test/kotlin", "src/androidTest/kotlin")
+    }
 }
 
 dependencies {
